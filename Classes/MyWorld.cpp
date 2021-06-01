@@ -13,5 +13,9 @@ bool MyWorld::init()
 	{
 		return false;
 	}
+
+	auto a = Sprite::create("CloseNormal.png");
+	this->addChild(a);
+
 	return true;
 }
