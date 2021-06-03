@@ -1,28 +1,45 @@
 #include "Snake.h"
-
 USING_NS_CC;
-Scene* Snake::createScene()
+SnakeSprite* SnakeSprite::createBody(int x, int y)
 {
-	auto scene = Scene::create();
-	auto layer = Snake::create();
-	scene->addChild(layer);
-	return scene;
+	SnakeSprite* body = new SnakeSprite();
+	if (body && body->init())
+	{
+		body->autorelease();
+		body->bodyInit(x, y);
+		return body;
+	}
+	CC_SAFE_DELETE(body);
+	return NULL;
 }
-bool Snake::init()
+bool SnakeSprite::init()
 {
-	if (!Layer::init())
+	if (!Sprite::init())
 	{
 		return false;
 	}
-	auto label = Label::createWithTTF("The Greedy Snake", "fonts/Marker Felt.ttf", 24);
-	label->setPosition(512, 721);
-
-	// add the label as a child to this layer
-	this->addChild(label, 1);
-	auto test = Sprite::create("map1.png");
-	test->setPosition(512, 384);
-	this->addChild(test);
-
-
 	return true;
+}
+void SnakeSprite::bodyInit(int x,int y)
+{
+	body = Sprite::create("body.png");
+	body->setPosition(x, y);
+	addChild(body);
+}
+void SnakeSprite::bodyDelete2(int x, int y)
+{
+	body = Sprite::create("texture.png");
+	body->setPosition(x, y);
+	addChild(body);
+
+}
+void SnakeSprite::bodyDelete(int x, int y)
+{
+	body = Sprite::create("texture.png");
+	body->setPosition(x, y);
+	addChild(body);
+}
+void SnakeSprite::update(float dt)
+{
+	CCLOG("update:%d,%f", GetCurrentTime(), dt);
 }

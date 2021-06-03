@@ -2,12 +2,17 @@
 #define SNAKE_H
 
 #include "cocos2d.h"
-class Snake :public cocos2d::Layer
+class SnakeSprite :public cocos2d::Sprite
 {
 public:
-	static cocos2d::Scene* createScene();
+	Sprite* body;
+	void bodyDelete(int x, int y);
+	static SnakeSprite* createBody(int x, int y);
+	void bodyInit(int x, int y);
+	void bodyDelete2(int x, int y);
 	virtual bool init();
-	CREATE_FUNC(Snake);
+	void SnakeSprite::update(float dt);
+	CREATE_FUNC(SnakeSprite);
 };
 
-#endif
+#endif#pragma once
