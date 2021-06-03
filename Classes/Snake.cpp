@@ -1,12 +1,17 @@
 #include "Snake.h"
 USING_NS_CC;
-SnakeSprite* SnakeSprite::createBody(int x, int y)
+SnakeSprite* SnakeSprite::createBody(int x, int y, int type)
 {
 	SnakeSprite* body = new SnakeSprite();
 	if (body && body->init())
 	{
 		body->autorelease();
-		body->bodyInit(x, y);
+		if(type == 0)
+			body->bodyInit(x, y);
+		else if(type == 1)
+			body->headInit(x, y);
+		else 
+			body->foodInit(x, y);
 		return body;
 	}
 	CC_SAFE_DELETE(body);
@@ -26,12 +31,17 @@ void SnakeSprite::bodyInit(int x,int y)
 	body->setPosition(x, y);
 	addChild(body);
 }
-void SnakeSprite::bodyDelete2(int x, int y)
+void SnakeSprite::headInit(int x, int y)
 {
-	body = Sprite::create("texture.png");
+	body = Sprite::create("head.png");
 	body->setPosition(x, y);
 	addChild(body);
-
+}
+void SnakeSprite::foodInit(int x, int y)
+{
+	body = Sprite::create("food.png");
+	body->setPosition(x, y);
+	addChild(body);
 }
 void SnakeSprite::bodyDelete(int x, int y)
 {
