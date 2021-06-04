@@ -6,12 +6,15 @@ SnakeSprite* SnakeSprite::createBody(int x, int y, int type)
 	if (body && body->init())
 	{
 		body->autorelease();
-		if(type == 0)
+		if (type == 0)
 			body->bodyInit(x, y);
-		else if(type == 1)
+		else if (type == 1)
 			body->headInit(x, y);
-		else 
+		else
 			body->foodInit(x, y);
+		return body;
+		body->autorelease();		
+		body->headInit(x, y);
 		return body;
 	}
 	CC_SAFE_DELETE(body);
