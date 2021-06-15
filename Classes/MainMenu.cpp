@@ -24,7 +24,7 @@
 
 #include "MainMenu.h"
 #include "Level1.h"
-
+#include "Level2.h"
 USING_NS_CC;
 
 Scene* MainMenu::createScene()
@@ -101,7 +101,7 @@ bool MainMenu::init()
     
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    auto sprite = Sprite::create("mainmenu.png");
     if (sprite == nullptr)
     {
         problemLoading("'HelloWorld.png'");
@@ -109,7 +109,7 @@ bool MainMenu::init()
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x+350, visibleSize.height / 2 + origin.y-120));
 
         // add the sprite as a child to this layer
         this->addChild(sprite, 0);
@@ -133,7 +133,7 @@ void MainMenu::menuCloseCallback(Ref* pSender)
 void MainMenu::GameStart(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->replaceScene(Level1::createScene());
+    Director::getInstance()->replaceScene(Level2::createScene());
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 

@@ -1,9 +1,9 @@
-#ifndef LEVEL1_H
-#define LEVEL1_H
+#ifndef LEVEL2_H
+#define LEVEL2_H
 #include "Snake.h"
 #include "ScoreBoard.h"
 #include <vector>
-class Level1 :public cocos2d::Layer
+class Level2 :public cocos2d::Layer
 {
 public:
 	int len;
@@ -24,9 +24,9 @@ public:
 	SnakeSprite* Food;
 	static cocos2d::Scene* createScene();
 	virtual bool init();
-	CREATE_FUNC(Level1);
+	CREATE_FUNC(Level2);
 	virtual void update(float dt);
-
+	void check_map_death();
 	void check_selfdeath();
 	void clean();
 	void eat_food();
