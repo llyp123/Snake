@@ -30,6 +30,7 @@ bool MyWorld::init()
 	auto myKeyListener = EventListenerKeyboard::create();
 	direction = 27;
 	score = 0;
+	gamespeed = 0.1;
 	myKeyListener->onKeyPressed = [=](EventKeyboard::KeyCode keycode,
 		cocos2d::Event* event)
 	{
@@ -43,75 +44,38 @@ bool MyWorld::init()
 	Food = SnakeSprite::createBody(Foodx, Foody, 2);
 	addChild(Food);
 	len = 3;
-	Snakex[2] = 32;
-	Snakey[2] = 29;
-	Snakex[1] = 62;
-	Snakey[1] = 29;
-	Snakex[0] = 92;
-	Snakey[0] = 29;
+	Snakex.push_back(92);
+	Snakey.push_back(29);
+	Snakex.push_back(62);
+	Snakey.push_back(29);
+	Snakex.push_back(32);
+	Snakey.push_back(29);
 	ScoreBoard = ScoreBoard::createScoreBroad(900,600,score);
 	addChild(ScoreBoard);
 	for (int i = 0;i < len;i++)
 	{
-		body[i] = SnakeSprite::createBody(Snakex[i], Snakey[i],0);
+		body.push_back(SnakeSprite::createBody(Snakex[i], Snakey[i],0));
 		addChild(body[i]);
 	}
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(myKeyListener, this);
-	schedule(CC_SCHEDULE_SELECTOR(MyWorld::update), 0.1f);
+	schedule(CC_SCHEDULE_SELECTOR(MyWorld::update), gamespeed);
 	return true;
 }
 void MyWorld::update(float dt)
 {
 	CCLOG("update:%d,%f", GetCurrentTime(), dt);
-	for (int i = 1;i < len;i++)
-	{
-		if (Snakex[0] == Snakex[i] && Snakey[0] == Snakey[i])
-		{
-			Director::getInstance()->replaceScene(MainMenu::createScene());
-		}
-	}
+	MyWorld::check_selfdeath();
 	if(direction<30)
 	{
-		for (int i = 0;i < len;i++)
-		{
-			body[i]->removeFromParent();
-		}
-		if (Snakex[0] == Foodx && Snakey[0] == Foody)
-		{
-			Food->removeFromParent();
-			srand(rand() * rand());
-			Foodx = (rand() % 33) * 30 + 32;
-			srand(rand() * rand());
-			Foody = (rand() % 22) * 30 + 29;
-			Food = SnakeSprite::createBody(Foodx, Foody, 2);
-			addChild(Food);
-			len++;
-			score += 10;
-			ScoreBoard->removeFromParent();
-			ScoreBoard = ScoreBoard::createScoreBroad(900, 600, score);
-			addChild(ScoreBoard);
-		}
-		switch (direction)
-		{
-		case 27:
-			MyWorld::right();
-			break;
-		case 28:
-			MyWorld::up();
-			break;
-		case 26:
-			MyWorld::left();
-			break;
-		case 29:
-			MyWorld::down();
-			break;
-		}
-		body[0] = SnakeSprite::createBody(Snakex[0], Snakey[0], 1);
+		MyWorld::clean();
+		MyWorld::eat_food();
+		MyWorld::move();
+		body.clear();
+		body.push_back(SnakeSprite::createBody(Snakex[0], Snakey[0], 1));
 		addChild(body[0]);
-
 		for (int i = 1;i < len;i++)
 		{
-			body[i] = SnakeSprite::createBody(Snakex[i], Snakey[i], 0);
+			body.push_back(SnakeSprite::createBody(Snakex[i], Snakey[i], 0));
 			addChild(body[i]);
 		}
 	}
@@ -169,6 +133,60 @@ void MyWorld::down()
 	else
 		Snakey[0] -= 30;
 }
-
-
-	
+void MyWorld::check_selfdeath()
+{
+	for (int i = 1;i < len;i++)
+	{
+		if (Snakex[0] == Snakex[i] && Snakey[0] == Snakey[i])
+		{
+			Director::getInstance()->replaceScene(MainMenu::createScene());
+		}
+	}
+}
+void MyWorld::clean()
+{
+	for (int i = 0;i < len;i++)
+	{
+		body[i]->removeFromParent();
+	}
+}
+void MyWorld::eat_food()
+{
+	if (Snakex[0] == Foodx && Snakey[0] == Foody)
+	{
+		Food->removeFromParent();
+		srand(rand() * rand());
+		Foodx = (rand() % 33) * 30 + 32;
+		srand(rand() * rand());
+		Foody = (rand() % 22) * 30 + 29;
+		Food = SnakeSprite::createBody(Foodx, Foody, 2);
+		addChild(Food);
+		len++;
+		Snakex.push_back(0);
+		Snakey.push_back(0);
+		score += 10;
+		ScoreBoard->removeFromParent();
+		ScoreBoard = ScoreBoard::createScoreBroad(900, 600, score);
+		addChild(ScoreBoard);
+		if (score > 20)
+			gamespeed = 0.1;
+	}
+}
+void MyWorld::move()
+{
+	switch (direction)
+	{
+	case 27:
+		MyWorld::right();
+		break;
+	case 28:
+		MyWorld::up();
+		break;
+	case 26:
+		MyWorld::left();
+		break;
+	case 29:
+		MyWorld::down();
+		break;
+	}
+}

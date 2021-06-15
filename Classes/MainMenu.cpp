@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "MainMenu.h"
-#include "MyWorld.h"
+#include "Level1.h"
 
 USING_NS_CC;
 
@@ -133,7 +133,7 @@ void MainMenu::menuCloseCallback(Ref* pSender)
 void MainMenu::GameStart(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->replaceScene(MyWorld::createScene());
+    Director::getInstance()->replaceScene(Level1::createScene());
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
