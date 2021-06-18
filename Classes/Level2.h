@@ -31,6 +31,8 @@ public:
 	void clean();
 	void eat_food();
 	void move();
+	void back(Ref* pSender);
+	void restart(Ref* pSender);
 };
 
 #endif

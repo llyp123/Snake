@@ -3,7 +3,10 @@
 #include "cstdlib"
 #include "MainMenu.h"
 #include "ScoreBoard.h"
-
+#include "cocos2d.h"
+#include <fstream>
+#include <vector>
+#include <algorithm>
 USING_NS_CC;
 Scene* Level1::createScene()
 {
@@ -20,9 +23,8 @@ bool Level1::init()
 	}
 	auto label = Label::createWithTTF("The Greedy Snake", "fonts/Marker Felt.ttf", 24);
 	label->setPosition(512, 721);
-
-	// add the label as a child to this layer
 	this->addChild(label, 1);
+
 	auto test = Sprite::create("map1.png");
 	test->setPosition(512, 384);
 	this->addChild(test);
@@ -31,27 +33,27 @@ bool Level1::init()
 	direction = 27;
 	score = 0;
 	gamespeed = 0.1;
-	myKeyListener->onKeyPressed = [=](EventKeyboard::KeyCode keycode,
-		cocos2d::Event* event)
-	{
-		direction = (int)keycode,
-			CCLOG("key is pressed,keycode is %d", keycode);
-	};
 	srand(unsigned(time(0)));
-	Foodx = (rand() % 33) * 30 + 32;
+	Foodx = (rand() % 31) * 30 + 62;
 	srand(rand() * rand());
-	Foody = (rand() % 22) * 30 + 29;
+	Foody = (rand() % 20) * 30 + 59;
 	Food = SnakeSprite::createBody(Foodx, Foody, 2);
 	addChild(Food);
 	len = 3;
+	Snakex.push_back(122);
+	Snakey.push_back(59);
 	Snakex.push_back(92);
-	Snakey.push_back(29);
+	Snakey.push_back(59);
 	Snakex.push_back(62);
-	Snakey.push_back(29);
-	Snakex.push_back(32);
-	Snakey.push_back(29);
-	ScoreBoard = ScoreBoard::createScoreBroad(900, 600, score);
-	addChild(ScoreBoard);
+	Snakey.push_back(59);
+	myKeyListener->onKeyPressed = [=](EventKeyboard::KeyCode keycode,
+		cocos2d::Event* event)
+	{
+		direction = (int)keycode;
+	};
+
+	scoreboard = ScoreBoard::createScoreBroad(900, 600, score);
+	addChild(scoreboard);
 	for (int i = 0;i < len;i++)
 	{
 		body.push_back(SnakeSprite::createBody(Snakex[i], Snakey[i], 0));
@@ -59,6 +61,7 @@ bool Level1::init()
 	}
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(myKeyListener, this);
 	schedule(CC_SCHEDULE_SELECTOR(Level1::update), gamespeed);
+	
 	return true;
 }
 void Level1::update(float dt)
@@ -68,11 +71,10 @@ void Level1::update(float dt)
 	if (direction < 30)
 	{
 		Level1::clean();
-		Level1::eat_food();
 		Level1::move();
 		body.clear();
-		body.push_back(SnakeSprite::createBody(Snakex[0], Snakey[0], 1));
-		addChild(body[0]);
+		Level1::eat_food();
+		
 		for (int i = 1;i < len;i++)
 		{
 			body.push_back(SnakeSprite::createBody(Snakex[i], Snakey[i], 0));
@@ -138,7 +140,51 @@ void Level1::check_selfdeath()
 	{
 		if (Snakex[0] == Snakex[i] && Snakey[0] == Snakey[i])
 		{
-			Director::getInstance()->replaceScene(MainMenu::createScene());
+			this->unschedule(CC_SCHEDULE_SELECTOR(Level1::update));
+			auto restartButton = MenuItemImage::create(
+				"begin.png",
+				"pbegin.png",
+				CC_CALLBACK_1(Level1::restart, this));
+			auto restart = Menu::create(restartButton, NULL);
+			restart->setPosition(512, 200);
+			this->addChild(restart, 1);
+			//////////////////////////
+			auto restartlabel = Label::createWithTTF("Restart", "fonts/Marker Felt.ttf", 30);
+			restartlabel->setPosition(512, 200);
+			this->addChild(restartlabel, 1);
+			direction = 59;
+
+			auto backButton = MenuItemImage::create(
+				"begin.png",
+				"pbegin.png",
+				CC_CALLBACK_1(Level1::back, this));
+			auto back = Menu::create(backButton, NULL);
+			back->setPosition(512, 100);
+			this->addChild(back, 1);
+			//////////////////////////
+			auto backlabel = Label::createWithTTF("Back", "fonts/Marker Felt.ttf", 30);
+			backlabel->setPosition(512, 100);
+			this->addChild(backlabel, 1);
+
+			std::string path = FileUtils::getInstance()->fullPathForFilename("Score1.txt");
+			std::ifstream infile(path);
+			int num;
+			std::vector<int> players;
+			while (infile >> num)
+			{
+				players.push_back(num);
+			}
+			players.push_back(score);
+			sort(players.begin(), players.end());
+
+			std::ofstream outfile(path);
+			for (int i = 0; i < players.size(); i++)
+			{
+				outfile << players[i] << std::endl;
+			}
+			infile.close();
+			outfile.close();
+			
 		}
 	}
 }
@@ -164,11 +210,28 @@ void Level1::eat_food()
 		Snakex.push_back(0);
 		Snakey.push_back(0);
 		score += 10;
-		ScoreBoard->removeFromParent();
-		ScoreBoard = ScoreBoard::createScoreBroad(900, 600, score);
-		addChild(ScoreBoard);
-		if (score > 20)
-			gamespeed = 0.1;
+		scoreboard->removeFromParent();
+		scoreboard = ScoreBoard::createScoreBroad(900, 600, score);
+		addChild(scoreboard);
+		body.push_back(SnakeSprite::createBody(Snakex[0], Snakey[0], 3));
+		addChild(body[0]);
+		if (score > 100&& score < 200)
+		{
+			this->unschedule(CC_SCHEDULE_SELECTOR(Level1::update));
+			gamespeed = 0.08;
+			schedule(CC_SCHEDULE_SELECTOR(Level1::update), gamespeed);
+		}
+		else if (score > 200)
+		{
+			this->unschedule(CC_SCHEDULE_SELECTOR(Level1::update));
+			gamespeed = 0.05;
+			schedule(CC_SCHEDULE_SELECTOR(Level1::update), gamespeed);
+		}
+	}
+	else
+	{
+		body.push_back(SnakeSprite::createBody(Snakex[0], Snakey[0], 1));
+		addChild(body[0]);
 	}
 }
 void Level1::move()
@@ -189,5 +252,11 @@ void Level1::move()
 		break;
 	}
 }
-
-
+void Level1::back(Ref* pSender)
+{
+	Director::getInstance()->replaceScene(MainMenu::createScene());
+}
+void Level1::restart(Ref* pSender)
+{
+	Director::getInstance()->replaceScene(Level1::createScene());
+}

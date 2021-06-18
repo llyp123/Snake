@@ -8,6 +8,7 @@ public:
 	Sprite* body;
 	void bodyDelete(int x, int y);
 	static SnakeSprite* createBody(int x, int y, int type);
+	void bigheadInit(int x, int y);
 	void bodyInit(int x, int y);
 	void foodInit(int x, int y);
 	void headInit(int x, int y);

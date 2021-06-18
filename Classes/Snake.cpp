@@ -10,8 +10,10 @@ SnakeSprite* SnakeSprite::createBody(int x, int y, int type)
 			body->bodyInit(x, y);
 		else if (type == 1)
 			body->headInit(x, y);
-		else
+		else if (type == 2)
 			body->foodInit(x, y);
+		else if(type == 3)
+			body->bigheadInit(x, y);
 		return body;
 		body->autorelease();		
 		body->headInit(x, y);
@@ -37,6 +39,12 @@ void SnakeSprite::bodyInit(int x,int y)
 void SnakeSprite::headInit(int x, int y)
 {
 	body = Sprite::create("head.png");
+	body->setPosition(x, y);
+	addChild(body);
+}
+void SnakeSprite::bigheadInit(int x, int y)
+{
+	body = Sprite::create("bighead.png");
 	body->setPosition(x, y);
 	addChild(body);
 }

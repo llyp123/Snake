@@ -19,7 +19,7 @@ public:
 	void up();
 	void down();
 
-	ScoreBoard* ScoreBoard;
+	ScoreBoard* scoreboard;
 	std::vector<SnakeSprite*> body;
 	SnakeSprite* Food;
 	static cocos2d::Scene* createScene();
@@ -31,6 +31,8 @@ public:
 	void clean();
 	void eat_food();
 	void move();
+	void back(Ref* pSender);
+	void restart(Ref* pSender);
 };
 
 #endif

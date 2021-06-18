@@ -23,8 +23,7 @@
  ****************************************************************************/
 
 #include "MainMenu.h"
-#include "Level1.h"
-#include "Level2.h"
+#include "MapChoose.h"
 USING_NS_CC;
 
 Scene* MainMenu::createScene()
@@ -62,16 +61,18 @@ bool MainMenu::init()
         "CloseSelected.png",
         CC_CALLBACK_1(MainMenu::menuCloseCallback, this));
 
-    
+
     float x = origin.x + visibleSize.width - closeItem->getContentSize().width / 2;
     float y = origin.y + closeItem->getContentSize().height / 2;
     closeItem->setPosition(Vec2(x, y));
-    
+
 
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
+
+
     //create BEGIN
     auto beginButton = MenuItemImage::create(
         "begin.png",
@@ -92,13 +93,13 @@ bool MainMenu::init()
     // create and initialize a label
 
     auto label = Label::createWithTTF("THE GREEDY SNAKE", "fonts/Marker Felt.ttf", 96);
-        // position the label on the center of the screen
+    // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width / 2,
         origin.y + visibleSize.height - label->getContentSize().height));
 
-        // add the label as a child to this layer
+    // add the label as a child to this layer
     this->addChild(label, 1);
-    
+
 
     // add "HelloWorld" splash screen"
     auto sprite = Sprite::create("mainmenu.png");
@@ -109,7 +110,7 @@ bool MainMenu::init()
     else
     {
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x+350, visibleSize.height / 2 + origin.y-120));
+        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x + 350, visibleSize.height / 2 + origin.y - 120));
 
         // add the sprite as a child to this layer
         this->addChild(sprite, 0);
@@ -133,7 +134,7 @@ void MainMenu::menuCloseCallback(Ref* pSender)
 void MainMenu::GameStart(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->replaceScene(Level2::createScene());
+    Director::getInstance()->replaceScene(MapChoose::createScene());
 
     /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
@@ -142,5 +143,5 @@ void MainMenu::GameStart(Ref* pSender)
 }
 void MainMenu::update(float dt)
 {
-    CCLOG("update:%d,%f", GetCurrentTime(),dt);
+    CCLOG("update:%d,%f", GetCurrentTime(), dt);
 }
