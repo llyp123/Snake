@@ -15,9 +15,6 @@ SnakeSprite* SnakeSprite::createBody(int x, int y, int type)
 		else if(type == 3)
 			body->bigheadInit(x, y);
 		return body;
-		body->autorelease();		
-		body->headInit(x, y);
-		return body;
 	}
 	CC_SAFE_DELETE(body);
 	return NULL;

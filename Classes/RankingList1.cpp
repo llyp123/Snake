@@ -76,7 +76,7 @@ bool RankingList1::init()
     
 
 
-    auto label = Label::createWithTTF("CHOOSE YOUR MAP", "fonts/Marker Felt.ttf", 96);
+    auto label = Label::createWithTTF("Ranking List", "fonts/Marker Felt.ttf", 96);
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width / 2,
         origin.y + visibleSize.height - label->getContentSize().height));
